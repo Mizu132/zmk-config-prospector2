@@ -1,23 +1,37 @@
-/ {
+0/ {
+    /* Step 1: Tell ZMK that this touch sensor handles the local UI, NOT host HID mouse input */
     chosen {
         zmk,input-listener = &touch_listener;
     };
+
+    /* Step 2: Safely clear the baseline driver listener framework */
+    /delete-node/ touch_listener;
 };
 
 &i2c0 {
     status = "okay";
+    clock-frequency = <100000>;
+    
+    /* Tie the physical I2C pins (D4/D5) to the I2C0 hardware peripheral */
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-1 = <&i2c0_sleep>;
+    pinctrl-names = "default", "sleep";
 
+    /* Step 3: Delete baseline node to guarantee overwrite */
+    /delete-node/ cst816s@15; 
+
+    /* Step 4: Instantiate a relaxed registration node */
     touch_sensor: cst816s@15 {
         compatible = "hynitron,cst816s";
         reg = <0x15>;
         status = "okay";
-        /* SWAPPED PIN MAP TO MATCH YOUR WIRING */
-        irq-gpios = <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>; /* D1 is your actual Interrupt */
-        rst-gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;                  /* D0 is your actual Reset */
+        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>; /* D0 is P0.02 */
+        rst-gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;                 /* D1 is P1.11 */
     };
 };
 
 / {
+    /* Step 5: Rebuild the input listener linked directly to our node */
     touch_listener: touch_listener {
         status = "okay";
         compatible = "zmk,input-listener";
