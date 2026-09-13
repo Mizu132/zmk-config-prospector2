@@ -17,12 +17,12 @@
     /delete-node/ cst816s@15; 
 
     touch_sensor: cst816s@15 {
-        /* Changing compatible string to generic forces ZMK to skip strict ID signature checking */
-        compatible = "hynitron,cst816s", "generic-touchscreen";
+        /* Restored to the single strict ZMK driver name to eliminate the compat errors */
+        compatible = "hynitron,cst816s";
         reg = <0x15>;
         status = "okay";
-        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>; 
-        rst-gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;                 
+        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>; /* D0 is P0.02 */
+        rst-gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;                 /* D1 is P1.11 */
     };
 };
 
