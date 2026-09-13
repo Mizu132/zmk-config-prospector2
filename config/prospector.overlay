@@ -1,0 +1,21 @@
+&i2c0 {
+    status = "okay";
+    /delete-node/ cst816s@15; /* Safely removes the old software driver definition */
+
+    touch_sensor: cst816t@15 {
+        compatible = "hynitron,cst816t", "hynitron,cst816s";
+        reg = <0x15>;
+        status = "okay";
+        irq-gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;  /* Pin D0 */
+        rst-gpios = <&gpio0 3 GPIO_ACTIVE_LOW>;  /* Pin D1 */
+    };
+};
+
+/ {
+    /delete-node/ touch_listener;
+    touch_listener: touch_listener {
+        status = "okay";
+        compatible = "zmk,input-listener";
+        device = <&touch_sensor>;
+    };
+};
