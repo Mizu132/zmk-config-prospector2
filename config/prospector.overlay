@@ -1,18 +1,25 @@
+/ {
+    /* Step 1: Wipe the default listener that binds exclusively to the "S" variant */
+    /delete-node/ touch_listener;
+};
+
 &i2c0 {
     status = "okay";
-    /delete-node/ cst816s@15; /* Safely removes the old software driver definition */
+    /* Step 2: Delete the baseline driver configuration entirely */
+    /delete-node/ cst816s@15; 
 
-    touch_sensor: cst816t@15 {
-        compatible = "hynitron,cst816t", "hynitron,cst816s";
+    /* Step 3: Instantiate a relaxed registration node */
+    touch_sensor: cst816s@15 {
+        compatible = "hynitron,cst816s";
         reg = <0x15>;
         status = "okay";
-        irq-gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;  /* Pin D0 */
-        rst-gpios = <&gpio0 3 GPIO_ACTIVE_LOW>;  /* Pin D1 */
+        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>; /* Forces clear interrupt polling */
+        rst-gpios = <&gpio0 3 GPIO_ACTIVE_LOW>;
     };
 };
 
 / {
-    /delete-node/ touch_listener;
+    /* Step 4: Rebuild the listener directly mapped to our relaxed node */
     touch_listener: touch_listener {
         status = "okay";
         compatible = "zmk,input-listener";
