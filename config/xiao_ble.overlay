@@ -1,5 +1,10 @@
 / {
-    /* Step 1: Safely clear the baseline driver listener framework */
+    /* Step 1: Tell ZMK that this touch sensor handles the local UI, NOT host HID mouse input */
+    chosen {
+        zmk,input-listener = &touch_listener;
+    };
+
+    /* Step 2: Safely clear the baseline driver listener framework */
     /delete-node/ touch_listener;
 };
 
@@ -12,10 +17,10 @@
     pinctrl-1 = <&i2c0_sleep>;
     pinctrl-names = "default", "sleep";
 
-    /* Step 2: Delete baseline node to guarantee overwrite */
+    /* Step 3: Delete baseline node to guarantee overwrite */
     /delete-node/ cst816s@15; 
 
-    /* Step 3: Instantiate a relaxed registration node */
+    /* Step 4: Instantiate a relaxed registration node */
     touch_sensor: cst816s@15 {
         compatible = "hynitron,cst816s";
         reg = <0x15>;
@@ -26,7 +31,7 @@
 };
 
 / {
-    /* Step 4: Rebuild the input listener linked directly to our node */
+    /* Step 5: Rebuild the input listener linked directly to our node */
     touch_listener: touch_listener {
         status = "okay";
         compatible = "zmk,input-listener";
