@@ -7,6 +7,11 @@
     status = "okay";
     clock-frequency = <100000>;
     
+    /* Tie the physical I2C pins (D4/D5) to the I2C0 hardware peripheral */
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-1 = <&i2c0_sleep>;
+    pinctrl-names = "default", "sleep";
+
     /* Step 2: Delete baseline node to guarantee overwrite */
     /delete-node/ cst816s@15; 
 
