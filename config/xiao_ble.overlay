@@ -1,4 +1,4 @@
-0/ {
+/ {
     /* Step 1: Tell ZMK that this touch sensor handles the local UI, NOT host HID mouse input */
     chosen {
         zmk,input-listener = &touch_listener;
